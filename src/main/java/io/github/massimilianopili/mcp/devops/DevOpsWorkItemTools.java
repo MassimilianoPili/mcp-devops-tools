@@ -152,6 +152,45 @@ public class DevOpsWorkItemTools {
         .onErrorResume(e -> Mono.just(Map.of("error", "Errore aggiornamento work item " + workItemId + ": " + e.getMessage())));
     }
 
+    @ReactiveTool(name = "devops_search_work_items",
+          description = "Cerca work item per filtri comuni (stato, tipo, assegnatario, sprint, tag). "
+                      + "Tutti i filtri sono opzionali. Senza filtri restituisce i work item recenti.")
+    public Mono<Map<String, Object>> searchWorkItems(
+            @ToolParam(description = "Stato: New, Active, Resolved, Closed", required = false) String state,
+            @ToolParam(description = "Tipo: Bug, Task, User Story, Feature, Epic", required = false) String workItemType,
+            @ToolParam(description = "Assegnatario (email o nome). Usa '@me' per l'utente corrente", required = false) String assignedTo,
+            @ToolParam(description = "Iteration path o nome sprint, es: Sprint 5", required = false) String iteration,
+            @ToolParam(description = "Tag da filtrare", required = false) String tag) {
+
+        StringBuilder wiql = new StringBuilder(
+                "SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] "
+              + "FROM workitems WHERE [System.TeamProject] = @project");
+
+        if (state != null && !state.isBlank()) {
+            wiql.append(" AND [System.State] = '").append(state.replace("'", "''")).append("'");
+        }
+        if (workItemType != null && !workItemType.isBlank()) {
+            wiql.append(" AND [System.WorkItemType] = '").append(workItemType.replace("'", "''")).append("'");
+        }
+        if (assignedTo != null && !assignedTo.isBlank()) {
+            if ("@me".equalsIgnoreCase(assignedTo.trim())) {
+                wiql.append(" AND [System.AssignedTo] = @me");
+            } else {
+                wiql.append(" AND [System.AssignedTo] = '").append(assignedTo.replace("'", "''")).append("'");
+            }
+        }
+        if (iteration != null && !iteration.isBlank()) {
+            wiql.append(" AND [System.IterationPath] UNDER '").append(iteration.replace("'", "''")).append("'");
+        }
+        if (tag != null && !tag.isBlank()) {
+            wiql.append(" AND [System.Tags] CONTAINS '").append(tag.replace("'", "''")).append("'");
+        }
+
+        wiql.append(" ORDER BY [System.ChangedDate] DESC");
+
+        return queryWorkItems(wiql.toString());
+    }
+
     private Map<String, String> patchOp(String field, String value) {
         return Map.of("op", "add", "path", "/fields/" + field, "value", value);
     }
