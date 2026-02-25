@@ -35,4 +35,9 @@ public class DevOpsProperties {
     public String getTeamBaseUrl() {
         return getBaseUrl() + "/" + team;
     }
+
+    /** Base URL per API org-scoped: https://dev.azure.com/{organization} */
+    public String getOrgBaseUrl() {
+        return "https://dev.azure.com/" + organization;
+    }
 }

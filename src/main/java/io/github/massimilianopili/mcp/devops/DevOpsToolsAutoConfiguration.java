@@ -11,7 +11,11 @@ import org.springframework.context.annotation.Import;
 @Import({DevOpsConfig.class,
          DevOpsWorkItemTools.class, DevOpsGitTools.class,
          DevOpsPipelineTools.class, DevOpsBoardTools.class,
-         DevOpsReleaseTools.class})
+         DevOpsReleaseTools.class,
+         DevOpsProjectTools.class, DevOpsClassificationTools.class,
+         DevOpsRepoAdvancedTools.class, DevOpsWorkItemAdvancedTools.class,
+         DevOpsWikiTools.class, DevOpsInfraTools.class,
+         DevOpsPolicyTools.class})
 public class DevOpsToolsAutoConfiguration {
     // Nessun ToolCallbackProvider bean necessario.
     // I tool @ReactiveTool vengono auto-registrati da
