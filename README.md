@@ -8,11 +8,11 @@ Spring Boot starter providing 47 MCP tools for Azure DevOps. Covers work items (
 <dependency>
     <groupId>io.github.massimilianopili</groupId>
     <artifactId>mcp-devops-tools</artifactId>
-    <version>0.0.1</version>
+    <version>0.1.0</version>
 </dependency>
 ```
 
-Requires Java 17+, Spring AI 1.0.0+, and [spring-ai-reactive-tools](https://github.com/MassimilianoPili/spring-ai-reactive-tools) 0.2.0+.
+Requires Java 21+, Spring AI 1.0.0+, and [spring-ai-reactive-tools](https://github.com/MassimilianoPili/spring-ai-reactive-tools) 0.3.0+.
 
 ## Tools (47)
 
@@ -44,10 +44,10 @@ MCP_DEVOPS_TEAM=your-team
 
 ## Requirements
 
-- Java 17+
+- Java 21+
 - Spring Boot 3.4+ with WebFlux
 - Spring AI 1.0.0+
-- spring-ai-reactive-tools 0.2.0+
+- spring-ai-reactive-tools 0.3.0+
 
 ## License
 
