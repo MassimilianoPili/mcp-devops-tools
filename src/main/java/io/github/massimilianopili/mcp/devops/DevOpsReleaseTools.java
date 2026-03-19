@@ -30,15 +30,15 @@ public class DevOpsReleaseTools {
     }
 
     @ReactiveTool(name = "devops_analyze_release",
-          description = "Analizza una lista di work item (task/user story/bug) e restituisce i repository (microservizi) da rilasciare, " +
-                        "basandosi sui branch, commit e pull request agganciati a ciascun work item. " +
-                        "Fornire gli ID dei work item separati da virgola OPPURE una query WIQL.",
+          description = "Analyzes a list of work items (task/user story/bug) and returns the repositories (microservices) to release, " +
+                        "based on the branches, commits, and pull requests linked to each work item. " +
+                        "Provide comma-separated work item IDs OR a WIQL query.",
           timeoutMs = 60000)
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> analyzeRelease(
-            @ToolParam(description = "ID dei work item separati da virgola, es: 123,456,789")
+            @ToolParam(description = "Comma-separated work item IDs, e.g. 123,456,789")
             String workItemIds,
-            @ToolParam(description = "Alternativa: query WIQL per selezionare i work item (se fornita, workItemIds viene ignorato)",
+            @ToolParam(description = "Alternative: WIQL query to select work items (if provided, workItemIds is ignored)",
                        required = false)
             String wiqlQuery) {
         return resolveWorkItemIds(workItemIds, wiqlQuery)

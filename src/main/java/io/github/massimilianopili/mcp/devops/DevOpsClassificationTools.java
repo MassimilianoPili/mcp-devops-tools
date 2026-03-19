@@ -26,7 +26,7 @@ public class DevOpsClassificationTools {
     }
 
     @ReactiveTool(name = "devops_list_area_paths",
-          description = "Elenca le area path (classificazione aree) del progetto Azure DevOps con struttura gerarchica")
+          description = "Lists area paths (area classification) of the Azure DevOps project with hierarchical structure")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> listAreaPaths() {
         return webClient.get()
@@ -38,11 +38,11 @@ public class DevOpsClassificationTools {
     }
 
     @ReactiveTool(name = "devops_create_area_path",
-          description = "Crea una nuova area path nel progetto Azure DevOps")
+          description = "Creates a new area path in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createAreaPath(
-            @ToolParam(description = "Path padre dove creare il nodo, es: '' per root o 'AreaPadre' per sotto-area") String parentPath,
-            @ToolParam(description = "Nome del nuovo nodo area") String name) {
+            @ToolParam(description = "Parent path where to create the node, e.g. '' for root or 'ParentArea' for sub-area") String parentPath,
+            @ToolParam(description = "Name of the new area node") String name) {
         String endpoint = props.getBaseUrl() + "/_apis/wit/classificationnodes/areas";
         if (parentPath != null && !parentPath.isBlank()) {
             endpoint += "/" + parentPath;
@@ -60,9 +60,9 @@ public class DevOpsClassificationTools {
     }
 
     @ReactiveTool(name = "devops_delete_area_path",
-          description = "Elimina una area path dal progetto Azure DevOps. I work item associati vengono reclassificati alla root.")
+          description = "Deletes an area path from the Azure DevOps project. Associated work items are reclassified to root.")
     public Mono<Map<String, Object>> deleteAreaPath(
-            @ToolParam(description = "Path del nodo area da eliminare, es: 'Area1' o 'Area1/SubArea'") String path) {
+            @ToolParam(description = "Area node path to delete, e.g. 'Area1' or 'Area1/SubArea'") String path) {
         return webClient.delete()
                 .uri(props.getBaseUrl() + "/_apis/wit/classificationnodes/areas/" + path
                         + "?$reclassifyId=1&api-version=" + props.getApiVersion())
@@ -73,7 +73,7 @@ public class DevOpsClassificationTools {
     }
 
     @ReactiveTool(name = "devops_list_iteration_paths",
-          description = "Elenca le iteration path (sprint/iterazioni) del progetto Azure DevOps con struttura gerarchica")
+          description = "Lists iteration paths (sprints/iterations) of the Azure DevOps project with hierarchical structure")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> listIterationPaths() {
         return webClient.get()
@@ -85,13 +85,13 @@ public class DevOpsClassificationTools {
     }
 
     @ReactiveTool(name = "devops_create_iteration_path",
-          description = "Crea una nuova iteration path (sprint) nel progetto Azure DevOps")
+          description = "Creates a new iteration path (sprint) in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createIterationPath(
-            @ToolParam(description = "Path padre dove creare il nodo, es: '' per root o 'Release1'") String parentPath,
-            @ToolParam(description = "Nome della nuova iterazione") String name,
-            @ToolParam(description = "Data di inizio in formato ISO 8601, es: 2026-01-01T00:00:00Z", required = false) String startDate,
-            @ToolParam(description = "Data di fine in formato ISO 8601, es: 2026-01-14T00:00:00Z", required = false) String finishDate) {
+            @ToolParam(description = "Parent path where to create the node, e.g. '' for root or 'Release1'") String parentPath,
+            @ToolParam(description = "Name of the new iteration") String name,
+            @ToolParam(description = "Start date in ISO 8601 format, e.g. 2026-01-01T00:00:00Z", required = false) String startDate,
+            @ToolParam(description = "Finish date in ISO 8601 format, e.g. 2026-01-14T00:00:00Z", required = false) String finishDate) {
 
         String endpoint = props.getBaseUrl() + "/_apis/wit/classificationnodes/iterations";
         if (parentPath != null && !parentPath.isBlank()) {
@@ -121,12 +121,12 @@ public class DevOpsClassificationTools {
     }
 
     @ReactiveTool(name = "devops_update_iteration_path",
-          description = "Aggiorna le date di un'iteration path (sprint) esistente nel progetto Azure DevOps")
+          description = "Updates the dates of an existing iteration path (sprint) in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> updateIterationPath(
-            @ToolParam(description = "Path dell'iterazione da aggiornare, es: 'Sprint 1'") String path,
-            @ToolParam(description = "Nuova data di inizio in formato ISO 8601, es: 2026-01-01T00:00:00Z", required = false) String startDate,
-            @ToolParam(description = "Nuova data di fine in formato ISO 8601, es: 2026-01-14T00:00:00Z", required = false) String finishDate) {
+            @ToolParam(description = "Iteration path to update, e.g. 'Sprint 1'") String path,
+            @ToolParam(description = "New start date in ISO 8601 format, e.g. 2026-01-01T00:00:00Z", required = false) String startDate,
+            @ToolParam(description = "New finish date in ISO 8601 format, e.g. 2026-01-14T00:00:00Z", required = false) String finishDate) {
 
         Map<String, Object> attributes = new LinkedHashMap<>();
         if (startDate != null && !startDate.isBlank()) attributes.put("startDate", startDate);

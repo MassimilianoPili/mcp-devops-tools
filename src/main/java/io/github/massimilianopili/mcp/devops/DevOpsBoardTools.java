@@ -25,7 +25,7 @@ public class DevOpsBoardTools {
     }
 
     @ReactiveTool(name = "devops_list_sprints",
-          description = "Elenca tutte le iterazioni/sprint del team Azure DevOps con date di inizio e fine")
+          description = "Lists all iterations/sprints of the Azure DevOps team with start and finish dates")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listSprints() {
         return webClient.get()
@@ -57,10 +57,10 @@ public class DevOpsBoardTools {
     }
 
     @ReactiveTool(name = "devops_get_sprint_work_items",
-          description = "Recupera i work item associati a uno sprint/iterazione specifica (restituisce ID e relazioni gerarchiche)")
+          description = "Retrieves work items associated with a specific sprint/iteration (returns IDs and hierarchical relations)")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> getSprintWorkItems(
-            @ToolParam(description = "ID dell'iterazione/sprint (UUID)") String iterationId) {
+            @ToolParam(description = "Iteration/sprint ID (UUID)") String iterationId) {
         return webClient.get()
                 .uri(props.getTeamBaseUrl()
                         + "/_apis/work/teamsettings/iterations/" + iterationId
@@ -72,10 +72,10 @@ public class DevOpsBoardTools {
     }
 
     @ReactiveTool(name = "devops_get_board_columns",
-          description = "Recupera le colonne di una board Azure DevOps con limiti WIP e mapping stati")
+          description = "Retrieves columns of an Azure DevOps board with WIP limits and state mappings")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> getBoardColumns(
-            @ToolParam(description = "Nome della board, es: Stories, Bugs, Backlog items") String boardName) {
+            @ToolParam(description = "Board name, e.g. Stories, Bugs, Backlog items") String boardName) {
         return webClient.get()
                 .uri(props.getTeamBaseUrl()
                         + "/_apis/work/boards/" + boardName

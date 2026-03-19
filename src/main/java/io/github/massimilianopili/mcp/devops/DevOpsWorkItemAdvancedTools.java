@@ -26,9 +26,9 @@ public class DevOpsWorkItemAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_delete_work_item",
-          description = "Elimina un work item in Azure DevOps (soft delete, recuperabile dal recycle bin)")
+          description = "Deletes a work item in Azure DevOps (soft delete, recoverable from recycle bin)")
     public Mono<Map<String, Object>> deleteWorkItem(
-            @ToolParam(description = "ID del work item da eliminare") int workItemId) {
+            @ToolParam(description = "Work item ID to delete") int workItemId) {
         return webClient.delete()
                 .uri(props.getBaseUrl() + "/_apis/wit/workitems/" + workItemId
                         + "?destroy=false&api-version=" + props.getApiVersion())
@@ -39,13 +39,13 @@ public class DevOpsWorkItemAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_add_work_item_link",
-          description = "Aggiunge un link/relazione tra due work item in Azure DevOps. Tipi comuni: System.LinkTypes.Hierarchy-Forward (parent-child), System.LinkTypes.Related")
+          description = "Adds a link/relation between two work items in Azure DevOps. Common types: System.LinkTypes.Hierarchy-Forward (parent-child), System.LinkTypes.Related")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> addWorkItemLink(
-            @ToolParam(description = "ID del work item sorgente") int workItemId,
-            @ToolParam(description = "URL completo del work item target, es: https://dev.azure.com/{org}/{project}/_apis/wit/workitems/{id}") String targetUrl,
-            @ToolParam(description = "Tipo di relazione, es: System.LinkTypes.Hierarchy-Forward, System.LinkTypes.Related") String relationType,
-            @ToolParam(description = "Commento opzionale per il link", required = false) String comment) {
+            @ToolParam(description = "Source work item ID") int workItemId,
+            @ToolParam(description = "Full URL of the target work item, e.g. https://dev.azure.com/{org}/{project}/_apis/wit/workitems/{id}") String targetUrl,
+            @ToolParam(description = "Relation type, e.g. System.LinkTypes.Hierarchy-Forward, System.LinkTypes.Related") String relationType,
+            @ToolParam(description = "Optional comment for the link", required = false) String comment) {
         Map<String, Object> value = new LinkedHashMap<>();
         value.put("rel", relationType);
         value.put("url", targetUrl);
@@ -68,11 +68,11 @@ public class DevOpsWorkItemAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_remove_work_item_link",
-          description = "Rimuove un link/relazione da un work item in Azure DevOps tramite indice della relazione")
+          description = "Removes a link/relation from a work item in Azure DevOps by relation index")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> removeWorkItemLink(
-            @ToolParam(description = "ID del work item") int workItemId,
-            @ToolParam(description = "Indice (0-based) della relazione nell'array relations del work item") int relationIndex) {
+            @ToolParam(description = "Work item ID") int workItemId,
+            @ToolParam(description = "0-based index of the relation in the work item's relations array") int relationIndex) {
         List<Map<String, Object>> patchOps = List.of(
                 Map.of("op", "remove", "path", "/relations/" + relationIndex)
         );

@@ -24,7 +24,7 @@ public class DevOpsInfraTools {
     }
 
     @ReactiveTool(name = "devops_list_agent_pools",
-          description = "Elenca tutti gli agent pool disponibili nell'organizzazione Azure DevOps")
+          description = "Lists all agent pools available in the Azure DevOps organization")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listAgentPools() {
         return webClient.get()
@@ -48,7 +48,7 @@ public class DevOpsInfraTools {
     }
 
     @ReactiveTool(name = "devops_list_build_queues",
-          description = "Elenca le code di build (agent queue) disponibili nel progetto Azure DevOps")
+          description = "Lists build queues (agent queues) available in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listBuildQueues() {
         return webClient.get()
@@ -72,7 +72,7 @@ public class DevOpsInfraTools {
     }
 
     @ReactiveTool(name = "devops_list_service_connections",
-          description = "Elenca le service connection (endpoint di servizio) configurate nel progetto Azure DevOps")
+          description = "Lists service connections (service endpoints) configured in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listServiceConnections() {
         return webClient.get()

@@ -25,7 +25,7 @@ public class DevOpsGitTools {
     }
 
     @ReactiveTool(name = "devops_list_repos",
-          description = "Elenca tutti i repository Git nel progetto Azure DevOps")
+          description = "Lists all Git repositories in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listRepos() {
         return webClient.get()
@@ -51,10 +51,10 @@ public class DevOpsGitTools {
     }
 
     @ReactiveTool(name = "devops_list_branches",
-          description = "Elenca i branch di un repository Git Azure DevOps")
+          description = "Lists branches of an Azure DevOps Git repository")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listBranches(
-            @ToolParam(description = "ID o nome del repository") String repoId) {
+            @ToolParam(description = "Repository ID or name") String repoId) {
         return webClient.get()
                 .uri(props.getBaseUrl() + "/_apis/git/repositories/" + repoId
                         + "/refs?filter=heads/&api-version=" + props.getApiVersion())
@@ -77,11 +77,11 @@ public class DevOpsGitTools {
     }
 
     @ReactiveTool(name = "devops_list_pull_requests",
-          description = "Elenca le pull request di un repository, con filtro opzionale per stato (active, completed, abandoned, all)")
+          description = "Lists pull requests of a repository, with optional status filter (active, completed, abandoned, all)")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listPullRequests(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "Filtro stato: active, completed, abandoned, all (default: active)", required = false)
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Status filter: active, completed, abandoned, all (default: active)", required = false)
             String status) {
         String uri = props.getBaseUrl() + "/_apis/git/repositories/" + repoId
                 + "/pullrequests?api-version=" + props.getApiVersion();
@@ -118,11 +118,11 @@ public class DevOpsGitTools {
     }
 
     @ReactiveTool(name = "devops_get_pull_request",
-          description = "Recupera i dettagli completi di una specifica pull request")
+          description = "Retrieves full details of a specific pull request")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> getPullRequest(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "ID della pull request") int pullRequestId) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Pull request ID") int pullRequestId) {
         return webClient.get()
                 .uri(props.getBaseUrl() + "/_apis/git/repositories/" + repoId
                         + "/pullrequests/" + pullRequestId
@@ -134,13 +134,13 @@ public class DevOpsGitTools {
     }
 
     @ReactiveTool(name = "devops_list_repo_files",
-          description = "Elenca i file in un repository Git, opzionalmente in un branch e path specifico")
+          description = "Lists files in a Git repository, optionally filtered by branch and path")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listRepoFiles(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "Path nella repo, es: /src/main", required = false) String scopePath,
-            @ToolParam(description = "Nome del branch, es: main, develop", required = false) String branch,
-            @ToolParam(description = "Ricorsione: OneLevel, Full (default: OneLevel)", required = false) String recursionLevel) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Path in the repository, e.g. /src/main", required = false) String scopePath,
+            @ToolParam(description = "Branch name, e.g. main, develop", required = false) String branch,
+            @ToolParam(description = "Recursion level: OneLevel, Full (default: OneLevel)", required = false) String recursionLevel) {
         StringBuilder uri = new StringBuilder();
         uri.append(props.getBaseUrl())
            .append("/_apis/git/repositories/").append(repoId)

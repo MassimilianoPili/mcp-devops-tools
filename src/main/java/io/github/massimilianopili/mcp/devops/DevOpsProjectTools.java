@@ -26,7 +26,7 @@ public class DevOpsProjectTools {
     }
 
     @ReactiveTool(name = "devops_list_projects",
-          description = "Elenca tutti i progetti nell'organizzazione Azure DevOps")
+          description = "Lists all projects in the Azure DevOps organization")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listProjects() {
         return webClient.get()
@@ -50,10 +50,10 @@ public class DevOpsProjectTools {
     }
 
     @ReactiveTool(name = "devops_get_project",
-          description = "Recupera i dettagli di un progetto Azure DevOps per ID o nome")
+          description = "Retrieves details of an Azure DevOps project by ID or name")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> getProject(
-            @ToolParam(description = "ID o nome del progetto") String projectId) {
+            @ToolParam(description = "Project ID or name") String projectId) {
         return webClient.get()
                 .uri(props.getOrgBaseUrl() + "/_apis/projects/" + projectId + "?api-version=" + props.getApiVersion())
                 .retrieve()
@@ -63,13 +63,13 @@ public class DevOpsProjectTools {
     }
 
     @ReactiveTool(name = "devops_create_project",
-          description = "Crea un nuovo progetto nell'organizzazione Azure DevOps. Restituisce un operationId per monitorare lo stato (usa devops_get_operation_status)")
+          description = "Creates a new project in the Azure DevOps organization. Returns an operationId to track status (use devops_get_operation_status)")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createProject(
-            @ToolParam(description = "Nome del progetto") String name,
-            @ToolParam(description = "Descrizione del progetto", required = false) String description,
-            @ToolParam(description = "Visibilità: private o public (default: private)", required = false) String visibility,
-            @ToolParam(description = "ID del processo template (es: Agile, Scrum, CMMI). Ometti per Agile.", required = false) String processTemplateId) {
+            @ToolParam(description = "Project name") String name,
+            @ToolParam(description = "Project description", required = false) String description,
+            @ToolParam(description = "Visibility: private or public (default: private)", required = false) String visibility,
+            @ToolParam(description = "Process template ID (e.g. Agile, Scrum, CMMI). Omit for Agile.", required = false) String processTemplateId) {
 
         String vis = (visibility != null && !visibility.isBlank()) ? visibility : "private";
         String templateId = (processTemplateId != null && !processTemplateId.isBlank())
@@ -95,10 +95,10 @@ public class DevOpsProjectTools {
     }
 
     @ReactiveTool(name = "devops_get_operation_status",
-          description = "Verifica lo stato di un'operazione asincrona Azure DevOps (es: creazione progetto). Stato: notSet, queued, inProgress, cancelled, succeeded, failed")
+          description = "Checks the status of an asynchronous Azure DevOps operation (e.g. project creation). Status: notSet, queued, inProgress, cancelled, succeeded, failed")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> getOperationStatus(
-            @ToolParam(description = "ID dell'operazione (restituito da devops_create_project)") String operationId) {
+            @ToolParam(description = "Operation ID (returned by devops_create_project)") String operationId) {
         return webClient.get()
                 .uri(props.getOrgBaseUrl() + "/_apis/operations/" + operationId + "?api-version=" + props.getApiVersion())
                 .retrieve()
@@ -108,10 +108,10 @@ public class DevOpsProjectTools {
     }
 
     @ReactiveTool(name = "devops_list_project_teams",
-          description = "Elenca i team di un progetto Azure DevOps")
+          description = "Lists teams of an Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listProjectTeams(
-            @ToolParam(description = "ID o nome del progetto") String projectId) {
+            @ToolParam(description = "Project ID or name") String projectId) {
         return webClient.get()
                 .uri(props.getOrgBaseUrl() + "/_apis/projects/" + projectId + "/teams?api-version=" + props.getApiVersion())
                 .retrieve()
@@ -131,12 +131,12 @@ public class DevOpsProjectTools {
     }
 
     @ReactiveTool(name = "devops_create_team",
-          description = "Crea un nuovo team in un progetto Azure DevOps")
+          description = "Creates a new team in an Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createTeam(
-            @ToolParam(description = "ID o nome del progetto") String projectId,
-            @ToolParam(description = "Nome del team") String name,
-            @ToolParam(description = "Descrizione del team", required = false) String description) {
+            @ToolParam(description = "Project ID or name") String projectId,
+            @ToolParam(description = "Team name") String name,
+            @ToolParam(description = "Team description", required = false) String description) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("name", name);
         if (description != null && !description.isBlank()) body.put("description", description);
@@ -152,10 +152,10 @@ public class DevOpsProjectTools {
     }
 
     @ReactiveTool(name = "devops_delete_team",
-          description = "Elimina un team da un progetto Azure DevOps")
+          description = "Deletes a team from an Azure DevOps project")
     public Mono<Map<String, Object>> deleteTeam(
-            @ToolParam(description = "ID o nome del progetto") String projectId,
-            @ToolParam(description = "ID del team da eliminare") String teamId) {
+            @ToolParam(description = "Project ID or name") String projectId,
+            @ToolParam(description = "Team ID to delete") String teamId) {
         return webClient.delete()
                 .uri(props.getOrgBaseUrl() + "/_apis/projects/" + projectId + "/teams/" + teamId + "?api-version=" + props.getApiVersion())
                 .retrieve()

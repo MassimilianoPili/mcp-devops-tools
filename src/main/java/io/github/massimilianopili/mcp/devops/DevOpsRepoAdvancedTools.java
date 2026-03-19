@@ -26,10 +26,10 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_create_repository",
-          description = "Crea un nuovo repository Git nel progetto Azure DevOps")
+          description = "Creates a new Git repository in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createRepository(
-            @ToolParam(description = "Nome del nuovo repository") String name) {
+            @ToolParam(description = "New repository name") String name) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("name", name);
         body.put("project", Map.of("id", props.getProject()));
@@ -45,9 +45,9 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_delete_repository",
-          description = "Elimina un repository Git dal progetto Azure DevOps")
+          description = "Deletes a Git repository from the Azure DevOps project")
     public Mono<Map<String, Object>> deleteRepository(
-            @ToolParam(description = "ID o nome del repository da eliminare") String repoId) {
+            @ToolParam(description = "Repository ID or name to delete") String repoId) {
         return webClient.delete()
                 .uri(props.getBaseUrl() + "/_apis/git/repositories/" + repoId + "?api-version=" + props.getApiVersion())
                 .retrieve()
@@ -57,12 +57,12 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_get_commits",
-          description = "Recupera i commit di un repository Git Azure DevOps, con filtro opzionale per path")
+          description = "Retrieves commits from an Azure DevOps Git repository, with optional path filter")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> getCommits(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "Numero massimo di commit da restituire (default: 20)", required = false) Integer top,
-            @ToolParam(description = "Filtra per path file/directory, es: /src/main", required = false) String itemPath) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Maximum number of commits to return (default: 20)", required = false) Integer top,
+            @ToolParam(description = "Filter by file/directory path, e.g. /src/main", required = false) String itemPath) {
         int limit = (top != null && top > 0) ? top : 20;
         String uri = props.getBaseUrl() + "/_apis/git/repositories/" + repoId
                 + "/commits?$top=" + limit + "&api-version=" + props.getApiVersion();
@@ -90,12 +90,12 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_create_branch",
-          description = "Crea un nuovo branch in un repository Git Azure DevOps a partire da un commit SHA")
+          description = "Creates a new branch in an Azure DevOps Git repository from a commit SHA")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createBranch(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "Nome del nuovo branch, es: feature/nuova-feature") String branchName,
-            @ToolParam(description = "SHA del commit da cui creare il branch (objectId)") String sourceSha) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "New branch name, e.g. feature/new-feature") String branchName,
+            @ToolParam(description = "Source commit SHA to create the branch from (objectId)") String sourceSha) {
         List<Map<String, String>> body = List.of(Map.of(
                 "name", "refs/heads/" + branchName,
                 "newObjectId", sourceSha,
@@ -113,12 +113,12 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_delete_branch",
-          description = "Elimina un branch da un repository Git Azure DevOps")
+          description = "Deletes a branch from an Azure DevOps Git repository")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> deleteBranch(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "Nome del branch da eliminare, es: feature/vecchia-feature") String branchName,
-            @ToolParam(description = "SHA corrente del branch (objectId)") String currentSha) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Branch name to delete, e.g. feature/old-feature") String branchName,
+            @ToolParam(description = "Current branch SHA (objectId)") String currentSha) {
         List<Map<String, String>> body = List.of(Map.of(
                 "name", "refs/heads/" + branchName,
                 "newObjectId", "0000000000000000000000000000000000000000",
@@ -136,14 +136,14 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_create_pull_request",
-          description = "Crea una nuova pull request in un repository Git Azure DevOps")
+          description = "Creates a new pull request in an Azure DevOps Git repository")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createPullRequest(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "Titolo della pull request") String title,
-            @ToolParam(description = "Branch sorgente (con prefisso refs/heads/, es: refs/heads/feature/x)") String sourceRefName,
-            @ToolParam(description = "Branch destinazione (es: refs/heads/main)") String targetRefName,
-            @ToolParam(description = "Descrizione della pull request", required = false) String description) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Pull request title") String title,
+            @ToolParam(description = "Source branch (with refs/heads/ prefix, e.g. refs/heads/feature/x)") String sourceRefName,
+            @ToolParam(description = "Target branch (e.g. refs/heads/main)") String targetRefName,
+            @ToolParam(description = "Pull request description", required = false) String description) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("title", title);
         body.put("sourceRefName", sourceRefName);
@@ -162,12 +162,12 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_complete_pull_request",
-          description = "Completa (merge) una pull request in Azure DevOps")
+          description = "Completes (merges) a pull request in Azure DevOps")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> completePullRequest(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "ID della pull request") int pullRequestId,
-            @ToolParam(description = "Commit SHA dell'ultimo commit del branch sorgente") String lastSourceCommitId) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Pull request ID") int pullRequestId,
+            @ToolParam(description = "Commit SHA of the last commit on the source branch") String lastSourceCommitId) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("status", "completed");
         body.put("lastMergeSourceCommit", Map.of("commitId", lastSourceCommitId));
@@ -184,11 +184,11 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_abandon_pull_request",
-          description = "Abbandona (chiude senza merge) una pull request in Azure DevOps")
+          description = "Abandons (closes without merge) a pull request in Azure DevOps")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> abandonPullRequest(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "ID della pull request") int pullRequestId) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Pull request ID") int pullRequestId) {
         return webClient.patch()
                 .uri(props.getBaseUrl() + "/_apis/git/repositories/" + repoId
                         + "/pullrequests/" + pullRequestId + "?api-version=" + props.getApiVersion())
@@ -201,12 +201,12 @@ public class DevOpsRepoAdvancedTools {
     }
 
     @ReactiveTool(name = "devops_add_pr_comment",
-          description = "Aggiunge un commento a una pull request in Azure DevOps")
+          description = "Adds a comment to a pull request in Azure DevOps")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> addPrComment(
-            @ToolParam(description = "ID o nome del repository") String repoId,
-            @ToolParam(description = "ID della pull request") int pullRequestId,
-            @ToolParam(description = "Testo del commento") String content) {
+            @ToolParam(description = "Repository ID or name") String repoId,
+            @ToolParam(description = "Pull request ID") int pullRequestId,
+            @ToolParam(description = "Comment text") String content) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("comments", List.of(Map.of("content", content, "commentType", 1)));
         body.put("status", 1);

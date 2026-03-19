@@ -26,10 +26,10 @@ public class DevOpsWorkItemTools {
     }
 
     @ReactiveTool(name = "devops_query_work_items",
-          description = "Esegue una query WIQL su Azure DevOps e restituisce i work item trovati con i campi principali (ID, titolo, stato, tipo, assegnatario). Massimo 200 risultati.")
+          description = "Executes a WIQL query on Azure DevOps and returns matching work items with key fields (ID, title, state, type, assignee). Maximum 200 results.")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> queryWorkItems(
-            @ToolParam(description = "Query WIQL, es: SELECT [System.Id], [System.Title] FROM workitems WHERE [System.State] = 'Active'")
+            @ToolParam(description = "WIQL query, e.g. SELECT [System.Id], [System.Title] FROM workitems WHERE [System.State] = 'Active'")
             String wiqlQuery) {
         return webClient.post()
                 .uri(props.getBaseUrl() + "/_apis/wit/wiql?api-version=" + props.getApiVersion())
@@ -78,11 +78,11 @@ public class DevOpsWorkItemTools {
     }
 
     @ReactiveTool(name = "devops_get_work_item",
-          description = "Recupera un singolo work item di Azure DevOps per ID, con tutti i campi e opzionalmente le relazioni")
+          description = "Retrieves a single Azure DevOps work item by ID, with all fields and optionally relations")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> getWorkItem(
-            @ToolParam(description = "ID numerico del work item") int workItemId,
-            @ToolParam(description = "Espandi: None, Relations, Fields, Links, All", required = false)
+            @ToolParam(description = "Numeric work item ID") int workItemId,
+            @ToolParam(description = "Expand: None, Relations, Fields, Links, All", required = false)
             String expand) {
         String uri = props.getBaseUrl() + "/_apis/wit/workitems/" + workItemId
                 + "?api-version=" + props.getApiVersion();
@@ -98,15 +98,15 @@ public class DevOpsWorkItemTools {
     }
 
     @ReactiveTool(name = "devops_create_work_item",
-          description = "Crea un nuovo work item in Azure DevOps (Bug, Task, User Story, Feature, Epic)")
+          description = "Creates a new work item in Azure DevOps (Bug, Task, User Story, Feature, Epic)")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createWorkItem(
-            @ToolParam(description = "Tipo: Bug, Task, User Story, Feature, Epic") String workItemType,
-            @ToolParam(description = "Titolo del work item") String title,
-            @ToolParam(description = "Descrizione (HTML supportato)", required = false) String description,
-            @ToolParam(description = "Stato iniziale, es: New, Active", required = false) String state,
-            @ToolParam(description = "Assegnatario (email o display name)", required = false) String assignedTo,
-            @ToolParam(description = "Iteration path, es: ProjectName\\Sprint 1", required = false) String iterationPath,
+            @ToolParam(description = "Type: Bug, Task, User Story, Feature, Epic") String workItemType,
+            @ToolParam(description = "Work item title") String title,
+            @ToolParam(description = "Description (HTML supported)", required = false) String description,
+            @ToolParam(description = "Initial state, e.g. New, Active", required = false) String state,
+            @ToolParam(description = "Assignee (email or display name)", required = false) String assignedTo,
+            @ToolParam(description = "Iteration path, e.g. ProjectName\\Sprint 1", required = false) String iterationPath,
             @ToolParam(description = "Area path", required = false) String areaPath) {
         List<Map<String, String>> patchOps = buildPatchDocument(
                 title, description, state, assignedTo, iterationPath, areaPath);
@@ -123,15 +123,15 @@ public class DevOpsWorkItemTools {
     }
 
     @ReactiveTool(name = "devops_update_work_item",
-          description = "Aggiorna un work item esistente in Azure DevOps. Specifica solo i campi da modificare.")
+          description = "Updates an existing Azure DevOps work item. Specify only the fields to modify.")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> updateWorkItem(
-            @ToolParam(description = "ID del work item da aggiornare") int workItemId,
-            @ToolParam(description = "Nuovo titolo", required = false) String title,
-            @ToolParam(description = "Nuova descrizione", required = false) String description,
-            @ToolParam(description = "Nuovo stato, es: Active, Resolved, Closed", required = false) String state,
-            @ToolParam(description = "Nuovo assegnatario", required = false) String assignedTo,
-            @ToolParam(description = "Nuovo iteration path", required = false) String iterationPath) {
+            @ToolParam(description = "Work item ID to update") int workItemId,
+            @ToolParam(description = "New title", required = false) String title,
+            @ToolParam(description = "New description", required = false) String description,
+            @ToolParam(description = "New state, e.g. Active, Resolved, Closed", required = false) String state,
+            @ToolParam(description = "New assignee", required = false) String assignedTo,
+            @ToolParam(description = "New iteration path", required = false) String iterationPath) {
         return Mono.defer(() -> {
             List<Map<String, String>> patchOps = buildPatchDocument(
                     title, description, state, assignedTo, iterationPath, null);
@@ -153,14 +153,14 @@ public class DevOpsWorkItemTools {
     }
 
     @ReactiveTool(name = "devops_search_work_items",
-          description = "Cerca work item per filtri comuni (stato, tipo, assegnatario, sprint, tag). "
-                      + "Tutti i filtri sono opzionali. Senza filtri restituisce i work item recenti.")
+          description = "Searches work items by common filters (state, type, assignee, sprint, tag). "
+                      + "All filters are optional. Without filters, returns recent work items.")
     public Mono<Map<String, Object>> searchWorkItems(
-            @ToolParam(description = "Stato: New, Active, Resolved, Closed", required = false) String state,
-            @ToolParam(description = "Tipo: Bug, Task, User Story, Feature, Epic", required = false) String workItemType,
-            @ToolParam(description = "Assegnatario (email o nome). Usa '@me' per l'utente corrente", required = false) String assignedTo,
-            @ToolParam(description = "Iteration path o nome sprint, es: Sprint 5", required = false) String iteration,
-            @ToolParam(description = "Tag da filtrare", required = false) String tag) {
+            @ToolParam(description = "State: New, Active, Resolved, Closed", required = false) String state,
+            @ToolParam(description = "Type: Bug, Task, User Story, Feature, Epic", required = false) String workItemType,
+            @ToolParam(description = "Assignee (email or name). Use '@me' for current user", required = false) String assignedTo,
+            @ToolParam(description = "Iteration path or sprint name, e.g. Sprint 5", required = false) String iteration,
+            @ToolParam(description = "Tag to filter by", required = false) String tag) {
 
         StringBuilder wiql = new StringBuilder(
                 "SELECT [System.Id], [System.Title], [System.State], [System.WorkItemType], [System.AssignedTo] "

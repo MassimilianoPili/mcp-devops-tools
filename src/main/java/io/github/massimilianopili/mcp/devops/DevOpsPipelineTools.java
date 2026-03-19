@@ -26,7 +26,7 @@ public class DevOpsPipelineTools {
     }
 
     @ReactiveTool(name = "devops_list_pipelines",
-          description = "Elenca tutte le pipeline del progetto Azure DevOps")
+          description = "Lists all pipelines in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listPipelines() {
         return webClient.get()
@@ -51,10 +51,10 @@ public class DevOpsPipelineTools {
     }
 
     @ReactiveTool(name = "devops_list_pipeline_runs",
-          description = "Elenca le esecuzioni (run) di una pipeline specifica con stato e risultato")
+          description = "Lists runs of a specific pipeline with state and result")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listPipelineRuns(
-            @ToolParam(description = "ID della pipeline") int pipelineId) {
+            @ToolParam(description = "Pipeline ID") int pipelineId) {
         return webClient.get()
                 .uri(props.getBaseUrl() + "/_apis/pipelines/" + pipelineId
                         + "/runs?api-version=" + props.getApiVersion())
@@ -80,11 +80,11 @@ public class DevOpsPipelineTools {
     }
 
     @ReactiveTool(name = "devops_trigger_pipeline",
-          description = "Avvia una nuova esecuzione di una pipeline Azure DevOps, opzionalmente su un branch specifico")
+          description = "Triggers a new run of an Azure DevOps pipeline, optionally on a specific branch")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> triggerPipeline(
-            @ToolParam(description = "ID della pipeline da avviare") int pipelineId,
-            @ToolParam(description = "Branch sorgente, es: refs/heads/main (default: branch predefinito)", required = false)
+            @ToolParam(description = "Pipeline ID to trigger") int pipelineId,
+            @ToolParam(description = "Source branch, e.g. refs/heads/main (default: repository default branch)", required = false)
             String branch) {
         Map<String, Object> body = new LinkedHashMap<>();
         if (branch != null && !branch.isBlank()) {

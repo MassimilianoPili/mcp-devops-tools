@@ -26,7 +26,7 @@ public class DevOpsPolicyTools {
     }
 
     @ReactiveTool(name = "devops_list_branch_policies",
-          description = "Elenca le policy di branch configurate nel progetto Azure DevOps")
+          description = "Lists branch policies configured in the Azure DevOps project")
     @SuppressWarnings("unchecked")
     public Mono<List<Map<String, Object>>> listBranchPolicies() {
         return webClient.get()
@@ -51,15 +51,15 @@ public class DevOpsPolicyTools {
     }
 
     @ReactiveTool(name = "devops_create_branch_policy",
-          description = "Crea una policy di branch in Azure DevOps. Tipo comune: fa2c2666-e2e5-4601-a3a8-0ac19db4921a (Minimum number of reviewers)")
+          description = "Creates a branch policy in Azure DevOps. Common type: fa2c2666-e2e5-4601-a3a8-0ac19db4921a (Minimum number of reviewers)")
     @SuppressWarnings("unchecked")
     public Mono<Map<String, Object>> createBranchPolicy(
-            @ToolParam(description = "ID del tipo di policy (GUID), es: fa2c2666-e2e5-4601-a3a8-0ac19db4921a per minimum reviewers") String policyTypeId,
-            @ToolParam(description = "Se la policy è abilitata") boolean isEnabled,
-            @ToolParam(description = "Se la policy è bloccante (impedisce il merge se non soddisfatta)") boolean isBlocking,
-            @ToolParam(description = "Nome del branch a cui applicare la policy, es: refs/heads/main") String refName,
-            @ToolParam(description = "ID del repository a cui applicare la policy") String repositoryId,
-            @ToolParam(description = "Numero minimo di revisori (per policy minimum reviewers)", required = false) Integer minimumApproverCount) {
+            @ToolParam(description = "Policy type ID (GUID), e.g. fa2c2666-e2e5-4601-a3a8-0ac19db4921a for minimum reviewers") String policyTypeId,
+            @ToolParam(description = "Whether the policy is enabled") boolean isEnabled,
+            @ToolParam(description = "Whether the policy is blocking (prevents merge if not satisfied)") boolean isBlocking,
+            @ToolParam(description = "Branch name to apply the policy to, e.g. refs/heads/main") String refName,
+            @ToolParam(description = "Repository ID to apply the policy to") String repositoryId,
+            @ToolParam(description = "Minimum number of reviewers (for minimum reviewers policy)", required = false) Integer minimumApproverCount) {
 
         Map<String, Object> scope = new LinkedHashMap<>();
         scope.put("refName", refName);
@@ -89,9 +89,9 @@ public class DevOpsPolicyTools {
     }
 
     @ReactiveTool(name = "devops_delete_branch_policy",
-          description = "Elimina una policy di branch dal progetto Azure DevOps")
+          description = "Deletes a branch policy from the Azure DevOps project")
     public Mono<Map<String, Object>> deleteBranchPolicy(
-            @ToolParam(description = "ID della configurazione di policy da eliminare") int configId) {
+            @ToolParam(description = "Policy configuration ID to delete") int configId) {
         return webClient.delete()
                 .uri(props.getBaseUrl() + "/_apis/policy/configurations/" + configId + "?api-version=" + props.getApiVersion())
                 .retrieve()
